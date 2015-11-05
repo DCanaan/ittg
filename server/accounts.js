@@ -1,3 +1,3 @@
 Accounts.config({
-	sendVerificationEmail: false
+	sendVerificationEmail: true
 });

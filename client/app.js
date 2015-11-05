@@ -4,7 +4,11 @@ Template.messages.helpers({
 
 Accounts.ui.config({
     passwordSignupFields: 'USERNAME_AND_EMAIL'
-})
+});
+
+Template.registerHelper('currentChannel', function () {
+	return Session.get('channel');
+});
 
 Template.registerHelper("timestampToTime", function (timestamp) {
 	var date = new Date(timestamp);
@@ -16,12 +20,27 @@ Template.registerHelper("timestampToTime", function (timestamp) {
 
 Template.registerHelper("usernameFromId", function (userId) {
 	var user = Meteor.users.findOne({_id: userId});
-	console.log(user.username);
 	if (typeof user === "undefined") {
 		return "Anonymous";
+	}
+	if (typeof user.services.github !== "undefined") {
+		return user.services.github.username;
 	}
 	return user.username;
 });
 
-Meteor.subscribe('messages');
-Meteor.subscribe('allUsernames');
+Template.listings.helpers({
+	channels: function () {
+		return Channels.find();
+	}
+});
+
+Template.channel.helpers({
+	active: function () {
+		if (Session.get('channel') === this.name) {
+			return "active";
+		} else {
+			return "";
+		}
+	}
+});
